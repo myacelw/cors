@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"	xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Char</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet"
+	href="http://cdn.bootcss.com/bootstrap/3.2.0/css/bootstrap.min.css" 
+	th:href="@{#{href.bootstrap.css}}"></link>
+<link rel="stylesheet"
+	href="http://cdn.bootcss.com/bootstrap/3.2.0/css/bootstrap-theme.min.css"></link>
+<script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://cdn.bootcss.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script src="../static/js/Chart.js" th:src="@{/js/Chart.js}"></script>
+</head>
+<body>
+	<canvas id="myChart" width="600" height="400"></canvas>
+	<script>
+	var data = {
+			labels : ["January","February","March","April","May","June","July"],
+			datasets : [
+				{
+					fillColor : "rgba(220,220,220,0.5)",
+					strokeColor : "rgba(220,220,220,1)",
+					pointColor : "rgba(220,220,220,1)",
+					pointStrokeColor : "#fff",
+					data : [65,59,90,81,56,55,40]
+				},
+				{
+					fillColor : "rgba(151,187,205,0.5)",
+					strokeColor : "rgba(151,187,205,1)",
+					pointColor : "rgba(151,187,205,1)",
+					pointStrokeColor : "#fff",
+					data : [28,48,40,19,96,27,100]
+				}
+			]
+		};
+	
+	
+		var ctx = $("#myChart").get(0).getContext("2d");
+		var myNewChart = new Chart(ctx).Line(data);
+		
+		
+		
+	</script>
+	
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Symptom</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet"
+	href="http://cdn.bootcss.com/bootstrap/3.2.0/css/bootstrap.min.css"></link>
+<link rel="stylesheet"
+	href="http://cdn.bootcss.com/bootstrap/3.2.0/css/bootstrap-theme.min.css"></link>
+<script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://cdn.bootcss.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+	<div th:replace="template::navbar"></div>
+
+	<!-- Main component -->
+	<div class="container">
+		<div class="page-header">
+			<h1>
+				<small>异常反应症状</small> <a class="btn btn-default" th:href="@{/symptom/edit}">添加</a>
+			</h1>
+		</div>
+
+		<div class="row">
+			<table class="table table-striped">
+				<tr>
+					<th>名称</th>
+					<th></th>				
+				</tr>
+				<tr th:each="r : ${list}">
+					<td th:text="${r.name}">1.1</td>
+					<td> <a class="btn btn-default" th:href="@{/symptom/edit(id=${r.id})}">修改</a>
+					<a class="btn btn-default" th:href="@{/symptom/delete(id=${r.id})}">删除</a>
+					</td>
+				</tr>
+			</table>
+		</div>
+
+
+	</div>
+</body>
+</html>

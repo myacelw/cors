@@ -1,0 +1,351 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Medical Case</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet"
+	href="http://cdn.bootcss.com/bootstrap/3.2.0/css/bootstrap.min.css"></link>
+<link rel="stylesheet"
+	href="http://cdn.bootcss.com/bootstrap/3.2.0/css/bootstrap-theme.min.css"></link>
+<script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://cdn.bootcss.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script src="../static/js/Chart.js" th:src="@{/js/Chart.js}"></script>
+<script>
+/*<![CDATA[*/
+Array.prototype.indexOf = function(val) {
+    for (var i = 0; i < this.length; i++) {
+        if (this[i] === val) return i;
+    }
+    return -1;
+};
+Array.prototype.remove = function(val) {
+    var index = this.indexOf(val);
+    if (index > -1) {
+        this.splice(index, 1);
+    }
+};
+
+
+$(document).ready(function(){
+	var colors = ["220,20,60","0,0,205","0,206,209","85,107,47","255,215,0","169,169,169"];
+	var meta=[];
+	$("#f506table th[data-meta]").click(function(){
+		var t=$(this).attr("data-meta");
+		if(t){
+			if(meta.indexOf(t)>-1){
+				meta.remove(t);	
+				$("#f506table th[data-meta='"+t+"']").css("background-color","");
+			}else{
+				meta.push(t);
+			}
+		}
+		if(meta.length>colors.length){
+			t = meta.shift();
+			$("#f506table th[data-meta='"+t+"']").css("background-color","");
+		}
+		for (var i = 0; i < meta.length; i++) {
+			$("#f506table th[data-meta='"+meta[i]+"']").css("background-color","rgba("+colors[i]+",1)");
+		}
+		  if($("#chartdiv").is(":hidden")===false){
+			  showChart();
+		  }	
+	});
+	
+
+	var showChart=	function(){
+		if(meta.length===0){
+			return;
+		}
+		
+		var x=[];
+		$(".startdate").each(function(){
+		    x.push($(this).text());
+		});
+	  
+		var datasets=[];
+
+		for (var i = 0; i < meta.length; i++) {
+			var data=[];
+			$("."+ meta[i]).each(function(){
+				var f=parseFloat($(this).text())
+				if (isNaN(f)) {
+					data.push(0);
+				} else {
+					data.push(f);
+				}
+			});
+			datasets[i]={
+					fillColor : "rgba("+colors[i]+",0)",
+					strokeColor : "rgba("+colors[i]+",1)",
+					pointColor : "rgba("+colors[i]+",1)",
+					pointStrokeColor : "#fff",
+					data : data
+				};
+		}
+	    
+	  	var data = {
+				labels : x,
+				datasets : datasets
+		};
+		var ctx = $("#myChart").get(0).getContext("2d");
+		var myNewChart = new Chart(ctx).Line(data);
+	};		
+	
+	$("#showChart").click(function(){
+	  $("#chartdiv").toggle();
+	  if($("#chartdiv").is(":hidden")===false){
+		  showChart();
+	  }
+	});
+
+});
+/*]]>*/
+</script>
+
+
+
+</head>
+<body>
+
+	<div th:replace="template::navbar"></div>
+
+	<!-- Main component -->
+	<div class="container">
+		<div class="page-header">
+			<h1>
+				<small>病历号</small> <span th:text="${medicalCase.number}">1000000233</span>
+				<a class="btn btn-default" th:href="@{'/medicalCase/next/'+${medicalCase.id}}">下一个</a>
+			</h1>
+		</div>
+
+
+	<div class="row">
+		<label class="col-xs-3" th:text="#{medicalCase.name}">姓名</label>
+		<p class="col-xs-3" th:text="${medicalCase.name}">张三</p>
+		<a class="btn btn-default" th:href="@{/medicalCase/edit(id=${medicalCase.id})}">修改</a>
+	</div>
+	<div class="row">
+		<label class="col-xs-3" th:text="#{medicalCase.sex}">性别</label>
+		<p class="col-xs-3" th:text="#{${'Sex.'+medicalCase.sex}}">男</p>
+	</div>
+		<div th:replace="template::label_p('medicalCase.nation')" />
+		<div th:replace="template::label_p('medicalCase.birthday')" />
+		<div th:replace="template::label_p('medicalCase.clinical')" />
+		<div th:replace="template::label_p('medicalCase.pathology')" />
+		<div th:replace="template::label_p('medicalCase.onsetTime')" />
+		<div th:replace="template::label_p('medicalCase.weight')" />
+
+		<div class="page-header">
+			<h2>
+				<small>病初时实验室检查</small> <a class="btn btn-default" th:if="${#lists.isEmpty(initialTestResults)}"
+					th:href="@{/testResult/edit(type='Initial',medicalCaseId=${medicalCase.id})}">添加</a>
+			</h2>
+		</div>
+		<div class="row">
+			<a name="t1" />
+			<table class="table table-striped">
+				<tr>
+					<th>尿常规PRO</th>
+					<th>尿常规RBC</th>
+					<th>蛋白定量</th>
+					<th>ALB</th>
+					<th>CHOL</th>
+					<th>TG</th>
+					<th>GREA</th>
+					<th>ALT</th>		
+					<th>AST</th>
+					<th>Ccr</th>	
+					<th></th>				
+				</tr>
+				<tr th:each="r : ${initialTestResults}">
+					<td th:text="${r.urinepro?:'未测'}">1.1</td>
+					<td th:text="${r.rbc?:'未测'}">1.2</td>
+					<td th:text="${r.protein?:'未测'}">1.3</td>
+					<td th:text="${r.alb?:'未测'}">1.4</td>
+					<td th:text="${r.chol?:'未测'}">1.5</td>
+					<td th:text="${r.tg?:'未测'}">1.6</td>	
+					<td th:text="${r.crea?:'未测'}">1.7</td>
+					<td th:text="${r.alt?:'未测'}">1.8</td>
+					<td th:text="${r.ast?:'未测'}">1.9</td>
+					<td th:text="${r.ccr?:'未测'}">2.0</td>
+					<td> <a class="btn btn-default" th:href="@{/testResult/edit(id=${r.id})}">修改</a></td>
+				</tr>
+			</table>
+		</div>
+
+
+		<div class="page-header">
+			<h2>
+				<small>激素初治情况</small> <a class="btn btn-default"
+					th:href="@{/testResult/edit(type='Hormone',medicalCaseId=${medicalCase.id})}">添加</a>
+			</h2>
+		</div>
+		<div class="row">
+			<a name="t2" />
+			<table class="table table-striped">
+				<tr>
+					<th>名称</th>
+					<th>起始时间</th>
+					<th>起始剂量</th>								
+					<th>尿常规PRO</th>
+					<th>尿常规RBC</th>
+					<th>蛋白定量</th>
+					<th>ALB</th>
+					<th>CHOL</th>
+					<th>TG</th>
+					<th>GREA</th>
+					<th>ALT</th>		
+					<th>AST</th>
+					<th>Ccr</th>	
+					<th>BUN</th>
+					<th>Urea</th>	
+					<th>Mem</th>
+					<th></th>				
+				</tr>
+				<tr th:each="r : ${hormoneTestResults}">
+					<td th:text="${r.name}">Name</td>
+					<td th:text="${{r.startDate}}">2014-9-9</td>	
+					<td th:text="${r.dose}">100</td>	
+					<td th:text="${r.urinepro?:'未测'}">1.1</td>
+					<td th:text="${r.rbc?:'未测'}">1.2</td>
+					<td th:text="${r.protein?:'未测'}">1.3</td>
+					<td th:text="${r.alb?:'未测'}">1.4</td>
+					<td th:text="${r.chol?:'未测'}">1.5</td>
+					<td th:text="${r.tg?:'未测'}">1.6</td>	
+					<td th:text="${r.crea?:'未测'}">1.7</td>
+					<td th:text="${r.alt?:'未测'}">1.8</td>
+					<td th:text="${r.ast?:'未测'}">1.9</td>
+					<td th:text="${r.ccr?:'未测'}">2.0</td>
+					<td th:text="${r.bun?:'未测'}">2.0</td>
+					<td th:text="${r.urea?:'未测'}">Urea</td>
+					<td th:text="${r.mem}">Mem</td>					
+					<td> <a class="btn btn-default" th:href="@{/testResult/edit(id=${r.id})}">修改</a>
+					<a class="btn btn-default" th:href="@{/testResult/delete(id=${r.id})}">删除</a>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div class="row">
+			<label class="col-xs-3">初次使用免疫抑制剂原因</label>
+			<p class="col-xs-3" th:text="${medicalCase.hormoneReason}"/>
+			<a class="btn btn-default" th:href="@{/medicalCase/hormoneReason(id=${medicalCase.id})}">设置</a>
+		</div>
+		<div class="row">
+			<label class="col-xs-3">转阴时间</label>
+			<p class="col-xs-3" th:text="${{medicalCase.hormoneToNeg}}"/>
+			<a class="btn btn-default" th:href="@{/medicalCase/toNeg(id=${medicalCase.id},type=${T(cors.domain.TestType).Hormone})}">设置</a>
+		</div>
+
+
+		<div class="page-header">
+			<h2>
+				<small>FK506治疗情况</small> 
+				<a class="btn btn-default" th:href="@{/testResult/edit(type='FK506',medicalCaseId=${medicalCase.id})}"> 添加 </a>
+				<a class="btn btn-default" id="showChart"> 显示/隐藏图表 </a>
+			</h2>
+		</div>
+		<div id ="chartdiv"  style="display:none">
+			<canvas id="myChart" width="600" height="400"></canvas>
+		</div>
+		
+		<div class="row">
+			<a name="t3" />
+			<table class="table table-striped" id ="f506table">
+				<tr>
+					<th>时间</th>
+					<th data-meta="dose">剂量</th>	
+					<th data-meta="hormoneDose">激素剂量</th>
+					<th data-meta="concentration">血药浓度</th>
+																			
+					<th data-meta="urinepro">尿常规PRO</th>
+					<th data-meta="rbc">尿常规RBC</th>
+					<th data-meta="protein">蛋白定量</th>
+					<th data-meta="alb">ALB</th>
+					<th data-meta="chol">CHOL</th>
+					<th data-meta="tg">TG</th>
+					<th data-meta="grea">GREA</th>
+					<th data-meta="alt">ALT</th>		
+					<th data-meta="ast">AST</th>
+					<th data-meta="ccr">Ccr</th>	
+					
+					<th data-meta="wt">Wt</th>
+					
+					<th data-meta="bun">BUN</th>
+					<th data-meta="urea">Urea</th>	
+					<th>Mem</th>
+					<th></th>				
+				</tr>
+				<tr th:each="r : ${fk506TestResults}">
+					<td class="startdate" th:text="${{r.startDate}}">2014-9-9</td>	
+					<td class="dose" th:text="${r.dose}">100</td>
+					<td class="hormoneDose" th:text="${r.hormoneDose}">23</td>	
+					<td class="concentration" th:text="${r.concentration}">69</td>
+
+					<td class="urinepro" th:text="${r.urinepro?:'未测'}">1.1</td>
+					<td class="rbc" th:text="${r.rbc?:'未测'}">1.2</td>
+					<td class="protein" th:text="${r.protein?:'未测'}">1.3</td>
+					<td class="alb" th:text="${r.alb?:'未测'}">1.4</td>
+					<td class="chol" th:text="${r.chol?:'未测'}">1.5</td>
+					<td class="tg" th:text="${r.tg?:'未测'}">1.6</td>	
+					<td class="crea" th:text="${r.crea?:'未测'}">1.7</td>
+					<td class="alt" th:text="${r.alt?:'未测'}">1.8</td>
+					<td class="ast" th:text="${r.ast?:'未测'}">1.9</td>
+					<td class="ccr" th:text="${r.ccr?:'未测'}">2.0</td>
+					
+					<td class="wt" th:text="${r.wt?:'未测'}">23.0</td>	
+					<td class="bun" th:text="${r.bun?:'未测'}">2.0</td>
+					<td class="urea" th:text="${r.urea?:'未测'}">Urea</td>
+					<td th:text="${r.mem}">Mem</td>	
+					<td> <a class="btn btn-default" th:href="@{/testResult/edit(id=${r.id})}">修改</a>
+					<a class="btn btn-default" th:href="@{/testResult/delete(id=${r.id})}">删除</a>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div class="row">
+			<label class="col-xs-3">使用原因</label>
+			<p class="col-xs-3" th:text="${medicalCase.fk506Reason}"/>
+			<a class="btn btn-default" th:href="@{/medicalCase/fk506Reason(id=${medicalCase.id})}">设置</a>
+		</div>
+		<div class="row">
+			<label class="col-xs-3">转阴时间</label>
+			<p class="col-xs-3" th:text="${{medicalCase.fk506ToNeg}}"/>
+			<a class="btn btn-default" th:href="@{/medicalCase/toNeg(id=${medicalCase.id},type=${T(cors.domain.TestType).FK506})}">设置</a>
+		</div>
+
+
+
+		<div class="page-header">
+			<h2>
+				<small>不良反应</small> <a class="btn btn-default"
+					th:href="@{/adverseReaction/edit(medicalCaseId=${medicalCase.id})}">添加</a>
+			</h2>
+		</div>
+		<div class="row">
+			<a name="t4" />
+			<table class="table table-striped">
+				<tr>
+					<th>时间</th>
+					<th>症状</th>	
+					<th>描述</th>
+					<th></th>				
+				</tr>
+				<tr th:each="r : ${adverseReactions}">
+					<td th:text="${{r.reactionDate}}">2014-9-9</td>	
+					<td th:text="${r.symptom}">症状</td>
+					<td th:text="${r.mem}">描述</td>	
+					
+					<td> <a class="btn btn-default" th:href="@{/adverseReaction/edit(id=${r.id})}">修改</a>
+					<a class="btn btn-default" th:href="@{/adverseReaction/delete(id=${r.id})}">删除</a>
+					</td>
+				</tr>
+			</table>
+		</div>
+
+
+
+	</div>
+</body>
+</html>

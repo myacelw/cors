@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"	xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Edit Test Result</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet"
+	href="http://cdn.bootcss.com/bootstrap/3.2.0/css/bootstrap.min.css" 
+	th:href="@{#{href.bootstrap.css}}"></link>
+<link rel="stylesheet"
+	href="http://cdn.bootcss.com/bootstrap/3.2.0/css/bootstrap-theme.min.css"></link>
+<script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://cdn.bootcss.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+	<div th:replace="template::navbar"></div>
+	
+	<div class="container">
+	<form  role="form"  action="#" th:action="@{/testResult/edit}"
+		th:object="${testResult}" method="post">
+
+		<fieldset>
+			<div id="legend">
+				<legend>检查结果</legend>
+			</div>
+		
+		<input type="hidden" th:field="*{id}" />
+		<input type="hidden" th:field="*{medicalCase.id}" />
+		<input type="hidden" th:field="*{type}" />
+		<div class="form-group disabled" >
+			<label class="control-label">病历号</label>
+			<input type="text" class="form-control" disabled="disabled" th:id="medicalCase.number" th:field="*{medicalCase.number}"/>
+		</div>
+
+	<div th:if="${testResult.type==T(cors.domain.TestType).Hormone}">
+			<div th:replace="template :: input('name','名称','text')"></div>
+	</div>
+	<div th:unless="${testResult.type==T(cors.domain.TestType).Initial}">
+			<div th:replace="template :: input('startDate','日期','date')"></div>
+			<div th:replace="template :: input('dose','剂量','text')"></div>
+	</div>
+	<div th:if="${testResult.type==T(cors.domain.TestType).FK506}">
+			<div th:replace="template :: input('hormoneDose','激素剂量','text')"></div>
+			<div th:replace="template :: input('concentration','血药浓度','text')"></div>
+	</div>
+
+			<div th:replace="template :: input('urinepro','尿常规PRO','text')"></div>
+			<div th:replace="template :: input('rbc','RBC','text')"></div>
+			<div th:replace="template :: input('protein','蛋白定量','text')"></div>
+			<div th:replace="template :: input('alb','ALB','text')"></div>
+			<div th:replace="template :: input('chol','CHOL','text')"></div>
+			<div th:replace="template :: input('tg','TG','text')"></div>
+			<div th:replace="template :: input('crea','CREA','text')"></div>
+			<div th:replace="template :: input('alt','ALT','text')"></div>
+			<div th:replace="template :: input('ast','AST','text')"></div>
+			<div th:replace="template :: input('ccr','Ccr','text')"></div>
+	<div th:if="${testResult.type==T(cors.domain.TestType).FK506}">
+			<div th:replace="template :: input('wt','Wt','text')"></div>
+			<div th:replace="template :: input('bun','BUN','text')"></div>
+			<div th:replace="template :: input('urea','Urea','text')"></div>
+	</div>
+	<div th:if="${testResult.type==T(cors.domain.TestType).Hormone}">
+			<div th:replace="template :: input('bun','BUN','text')"></div>
+			<div th:replace="template :: input('urea','Urea','text')"></div>
+	</div>
+			<div th:replace="template :: input('mem','Mem','text')"></div>
+			<input type="submit" class="btn btn-default" value="确定" />
+		</fieldset>
+	</form>
+	</div>
+
+</body>
+</html>

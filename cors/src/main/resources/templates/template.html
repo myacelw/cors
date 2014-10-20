@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+<!-- bootstrap && jquery -->
+<link rel="stylesheet"
+	href="http://cdn.bootcss.com/bootstrap/3.2.0/css/bootstrap.min.css"></link>
+<link rel="stylesheet"
+	href="http://cdn.bootcss.com/bootstrap/3.2.0/css/bootstrap-theme.min.css"></link>
+<script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://cdn.bootcss.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+
+<!-- datatables -->
+<link rel="stylesheet"
+	href="http:////cdn.datatables.net/1.10.1/css/jquery.dataTables.css"></link>
+<script
+	src="http://cdn.datatables.net/1.10.1/js/jquery.dataTables.min.js"></script>
+
+</head>
+
+<body>
+
+	<div th:fragment="navbar" class="navbar navbar-default"
+		role="navigation">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed"
+					data-toggle="collapse" data-target=".navbar-collapse">
+					<span class="sr-only">Toggle navigation</span> <span
+						class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="#">CORS</a>
+			</div>
+			<div class="navbar-collapse collapse">
+				<ul class="nav navbar-nav  navbar-right">
+					<li><a href="edit.html" th:href="@{/medicalCase/edit}"
+						th:text="#{medicalCase.new}">新建病例</a></li>
+					<li><a href="show.html" th:href="@{/medicalCase/query}"
+						th:text="#{medicalCase.find}">查询病例</a></li>
+					<li><a href="symptom.html" th:href="@{/clinical/show}"
+						th:text="#{clinical.show}">设置诊断</a></li>
+					<li><a href="symptom.html" th:href="@{/symptom/show}"
+						th:text="#{symptom.show}">设置症状</a></li>
+					<li><a href="javascript:document.form1.submit();">注销 </a>
+						<form name="form1" th:action="@{/logout}" method="post"></form></li>
+					<!-- <li><a href="stat.html" th:href="@{/medicalCase/stat}" th:text="#{medicalCase.stat}">查看报表</a></li>  -->
+				</ul>
+			</div>
+			<!--/.nav-collapse -->
+		</div>
+		<!--/.container-fluid -->
+	</div>
+
+	<!-- edit -->
+
+	<div th:fragment="input(field,text,type)" class="form-group"
+		th:classappend="${#fields.hasErrors(field)}? has-error">
+		<label class="control-label" th:for="${field}" th:text="${text}"></label>
+		<input th:type="${type}" class="form-control" th:id="${field}"
+			th:field="*{__${field}__}" />
+		<p th:replace="template::help(${field})" />
+	</div>
+
+	<div th:fragment="textarea(field,text)" class="form-group"
+		th:classappend="${#fields.hasErrors(field)}? has-error">
+		<label class="control-label" th:for="${field}" th:text="${text}"></label>
+		<textarea class="form-control" th:id="${field}"
+			th:field="*{__${field}__}">
+		</textarea>
+		<p th:replace="template::help(${field})" />
+	</div>
+
+
+	<div th:fragment="select(field,options,text)" class="form-group"
+		th:classappend="${#fields.hasErrors(field)}? has-error">
+		<label class="control-label" th:for="${field}" th:text="${text}"></label>
+		<select class="form-control" th:id="${field}"
+			th:field="*{__${field}__}">
+			<option th:each="item:${options}" th:value="${item}"
+				th:text="#{${item.messageCode()}}">Option A</option>
+		</select>
+	</div>
+
+
+
+	<p th:fragment="help(field)" class="help-block"
+		th:if="${#fields.hasErrors(field)}" th:errors="*{__${field}__}">Field
+		is error.</p>
+
+	<!-- show -->
+	<div th:fragment="label_p(field)" class="row">
+		<label class="col-xs-3" th:text="#{${field}}">姓名</label>
+		<p class="col-xs-3" th:text="${{__${field}__}}">张三</p>
+	</div>
+
+</body>
+
+</html>

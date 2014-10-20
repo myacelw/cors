@@ -1,0 +1,67 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>All Medical Case</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet"
+	href="http://cdn.bootcss.com/bootstrap/3.2.0/css/bootstrap.min.css"></link>
+<link rel="stylesheet"
+	href="http://cdn.bootcss.com/bootstrap/3.2.0/css/bootstrap-theme.min.css"></link>
+<script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://cdn.bootcss.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+	<div th:replace="template::navbar"></div>
+
+	<!-- Main component -->
+	<div class="container">
+
+
+		<div class="page-header">
+			<h2>
+				<small>病例列表</small>
+			</h2>
+		</div>
+		<div class="row">
+			<table class="table table-striped">
+				<tr>
+					<th th:text="#{medicalCase.number}" />
+					<th th:text="#{medicalCase.name}" />
+					<th th:text="#{medicalCase.sex}" />
+					<th th:text="#{medicalCase.nation}" />
+					<th th:text="#{medicalCase.birthday}" />
+					<th th:text="#{medicalCase.clinical}" />
+					<th th:text="#{medicalCase.pathology}" />
+					<th th:text="#{medicalCase.onsetTime}" />
+					<th th:text="#{medicalCase.weight}" />
+					<th th:text="#{medicalCase.hormoneReason}" />
+					<th th:text="#{medicalCase.hormoneToNeg}" />
+					<th th:text="#{medicalCase.fk506Reason}" />
+					<th th:text="#{medicalCase.fk506ToNeg}" />
+				</tr>
+
+				<tr th:each="r : ${list}">
+					<td><a href="#" th:href="@{'/medicalCase/show/'+${r.id}}"
+						th:text="${r.number}">123</a></td>
+					<td th:text="${r.name}">1.2</td>
+					<td th:text="#{${'Sex.'+r.sex}}">1.3</td>
+					<td th:text="${r.nation}">1.3</td>
+					<td th:text="${{r.birthday}}">1.4</td>
+					<td th:text="${r.clinical}">1.5</td>
+					<td th:text="${r.pathology}">1.7</td>
+					<td th:text="${{r.onsetTime}}">1.6</td>
+					<td th:text="${r.weight}">1.8</td>
+					<td th:text="${r.hormoneReason}">1.9</td>
+					<td th:text="${{r.hormoneToNeg}}">2.0</td>
+					<td th:text="${r.fk506Reason}">1.9</td>
+					<td th:text="${{r.fk506ToNeg}}">2.0</td>
+				</tr>
+			</table>
+		</div>
+
+	</div>
+</body>
+</html>

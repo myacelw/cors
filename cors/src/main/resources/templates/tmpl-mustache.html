@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+<!-- bootstrap && jquery -->
+<link rel="stylesheet"
+	href="http://cdn.bootcss.com/bootstrap/3.2.0/css/bootstrap.min.css"></link>
+<link rel="stylesheet"
+	href="http://cdn.bootcss.com/bootstrap/3.2.0/css/bootstrap-theme.min.css"></link>
+<script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://cdn.bootcss.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+
+<!-- datatables -->
+<link rel="stylesheet"
+	href="http:////cdn.datatables.net/1.10.1/css/jquery.dataTables.css"></link>
+<script
+	src="http://cdn.datatables.net/1.10.1/js/jquery.dataTables.min.js"></script>
+
+</head>
+
+<body>
+
+	<!-- query -->
+	<div th:fragment="condition_part" id="conditionrow_{{number}}"
+		class="form-group ">
+		{{^first}}
+		<div class="row">
+			<div class="col-xs-3  col-lg-2">
+				<select class="form-control" name="conditions[{{number}}].operator">
+					<option th:each="item : ${T(cors.domain.condition.Operator).values()}" th:text="${item}" th:value="${item}">AND</option>
+				</select>
+			</div>
+		</div>
+		{{/first}}
+		<div class="row ">
+			<div class="col-xs-9  col-lg-6">
+				<select  class="form-control"  id="type_{{number}}" name="conditions[{{number}}].type">
+					<option th:each="item : ${types}" th:utext="#{'ConditionType.'+${item.getName()}}" th:value="${item.getName()}"  th:attrappend="data-inputType=${item.getClazz()}">姓名</option>
+				</select>
+			</div>
+			<div class="col-xs-3  col-lg-2">
+				<select class="form-control"  id="symbol_{{number}}" name="conditions[{{number}}].symbol">
+					<option th:each="item : ${T(cors.domain.condition.Symbol).values()}" th:id="${'symbol_{{number}}-'+item}" th:utext="${item.toName()}"  th:value="${item}">=</option>
+				</select>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-9  col-lg-6">
+				<input class="form-control" id="input_{{number}}" type="text" placeholder="条件值" name="conditions[{{number}}].value"/>
+				<select class="form-control" id="select_{{number}}" style="display:none" name="conditions[{{number}}].selected">
+
+				</select>
+			</div>
+			<div class="col-xs-3  col-lg-2">
+				{{^first}}
+				<botton id="remove_button_{{number}}" type="button"
+					class="btn btn-default">-</botton>
+				{{/first}}
+				<botton id="add_button_{{number}}" type="button"
+					class="btn btn-default">+</botton>
+			</div>
+		</div>
+	</div>
+
+	<div th:fragment="select_part">
+		<option th:each="option : ${options}"  th:text="${option.getMessageCode()==null?option.getName():#messages.msg(option.getMessageCode())}" th:value="${option.getValue()}"></option>
+	</div>
+
+	<div th:fragment="table_part" id="table" class="row">		
+			<table class="table table-striped">
+				<tr>
+					<th th:text="#{medicalCase.number}" />
+					<th th:text="#{medicalCase.name}" />
+					<th th:text="#{medicalCase.sex}" />
+					<th th:text="#{medicalCase.nation}" />
+					<th th:text="#{medicalCase.birthday}" />
+					<th th:text="#{medicalCase.clinical}" />
+					<th th:text="#{medicalCase.pathology}" />
+					<th th:text="#{medicalCase.onsetTime}" />
+					<th th:text="#{medicalCase.weight}" />
+					<th th:text="#{medicalCase.hormoneReason}" />
+					<th th:text="#{medicalCase.hormoneToNeg}" />
+					<th th:text="#{medicalCase.fk506Reason}" />
+					<th th:text="#{medicalCase.fk506ToNeg}" />
+				</tr>
+
+				<tr th:each="r : ${list}">
+					<td><a href="#" th:href="@{'/medicalCase/show/'+${r.id}}"
+						th:text="${r.number}">123</a></td>
+					<td th:text="${r.name}">1.2</td>
+					<td th:text="#{${'Sex.'+r.sex}}">1.3</td>
+					<td th:text="${r.nation}">1.3</td>
+					<td th:text="${{r.birthday}}">1.4</td>
+					<td th:text="${r.clinical}">1.5</td>
+					<td th:text="${r.pathology}">1.7</td>
+					<td th:text="${{r.onsetTime}}">1.6</td>
+					<td th:text="${r.weight}">1.8</td>
+					<td th:text="${r.hormoneReason}">1.9</td>
+					<td th:text="${{r.hormoneToNeg}}">2.0</td>
+					<td th:text="${r.fk506Reason}">1.9</td>
+					<td th:text="${{r.fk506ToNeg}}">2.0</td>
+				</tr>
+			</table>
+		</div>
+
+
+
+</body>
+
+</html>

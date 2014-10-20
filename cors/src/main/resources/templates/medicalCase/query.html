@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Find Medical Case</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet"
+	href="http://cdn.bootcss.com/bootstrap/3.2.0/css/bootstrap.min.css"
+	th:href="@{#{href.bootstrap.css}}"></link>
+<link rel="stylesheet"
+	href="http://cdn.bootcss.com/bootstrap/3.2.0/css/bootstrap-theme.min.css"></link>
+<script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://cdn.bootcss.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script src="../../static/js/mustache.js" th:src="@{/js/mustache.js}"></script>
+
+<script id="dropdownli" type="x-tmpl-mustache">
+{{#list}}
+<li role="presentation"><a class="querybyid"  role="menuitem" tabindex="-1" data-id="{{id}}">{{name}}</a></li>
+{{/list}}
+</script>
+
+<script th:inline="javascript">
+/*<![CDATA[*/
+	$(document).ready(function() {
+
+		var seq = 0;
+		var template = null;
+		var syms=["eq","neq","gt","lt","gte","lte","like"];
+		var queryCondition = null;
+		
+		$.get('condition_part', function(tmpl) {
+			Mustache.parse(tmpl);
+			var rendered = $.mustache(tmpl, {
+				number : 0,first: true
+			});
+
+			$("#legend").after(rendered);
+			$("#add_button_0").click(addButtonClick);
+			$("#type_0").change(onChangeType);
+			template = tmpl;
+		});
+		
+		var addButtonClick = function() {
+			var id = $(this).attr("id").substr("add_button_".length);
+
+			var newid = ++seq;
+
+			var rendered = $.mustache(template, {
+				number : seq,first:false
+			});
+			$("#conditionrow_" + id).after(rendered);
+
+			$("#add_button_" + newid).click(addButtonClick);
+			$("#remove_button_" + newid).click(removeButtonClick);
+			$("#type_"+ newid).change(onChangeType);
+		};
+
+		var removeButtonClick = function() {
+			var id = $(this).attr("id").substr("remove_button_".length);
+			$("#conditionrow_" + id).remove();
+		};
+		
+		var onChangeType = function(){
+			var id = $(this).attr("id").substr("type_".length);
+			var attr = $(this).find("option:selected").attr("data-inputType");
+			var type =  $(this).val();
+			
+			if(attr =="id"){
+				$("#select_"+id).show();
+				$("#input_"+id).hide();
+				
+				$.get('get_type_option/'+type.replace(/\./, "_"), function(options_html) {
+					$("#select_"+id).html(options_html);
+				});	
+				
+				for(i in syms){
+					$("#symbol_"+id+"-"+syms[i]).hide();
+				}
+				$("#symbol_"+id+"-eq").show();
+				$("#symbol_"+id+"-neq").show();
+			}
+			else{
+				$("#select_"+id).hide();
+				$("#input_"+id).show();
+				
+				for(i in syms){
+					$("#symbol_"+id+"-"+syms[i]).show();
+				}
+				
+				if(attr =="int" || attr=="float" ){
+					$("#symbol_"+id+"-like").hide();
+				}
+			}
+		}
+		
+		var queryButtonClick =function(){
+			queryCondition = $('#form').serialize();
+			
+			$.post([[@{/medicalCase/query}]],
+					queryCondition,
+					function(data) {
+	                	$("#result").html(data);
+	                }
+			);
+		}
+
+
+		
+		$("#queryButton").click(queryButtonClick);
+		
+		
+		var saveQueryButtonClick =function(){
+			var name =$('#queryName').val().trim();
+			if(queryCondition!=null && name!=null && name!=""){
+				$.post([[@{/medicalCase/saveQuery}]]+'/'+name,
+						queryCondition,
+						function(data) {
+		                	//成功
+		            		
+							updateQueryList();
+		                }
+				);
+			}
+		}
+		$("#saveQueryButton").click(saveQueryButtonClick);
+
+		//更新保存的查询列表
+		var updateQueryList =function(){
+				$.get([[@{/medicalCase/getQueryList}]],
+						function(data) {
+					 		var tmpl = $('#dropdownli').html();
+							Mustache.parse(tmpl);
+							var rendered = $.mustache(tmpl, {list:data});
+		                	$('#dropdownlist').html(rendered);
+		                	
+		    				$("#dropdownlist a").each(
+		    						function(){$(this).click(queryByIdClick)}
+		    					);
+		                }
+				);
+		}
+		
+		updateQueryList();
+		
+		var selectedQueryId= null;
+		
+		var queryByIdClick =function(){
+			selectedQueryId = $(this).attr("data-id");
+			$.get([[@{/medicalCase/query/}]]+selectedQueryId,
+					function(data) {
+	                	$("#result").html(data);
+	                }
+			);
+		}
+		
+		var deleteQuery =function(){
+			$.get([[@{/medicalCase/deleteQuery/}]]+selectedQueryId,
+					function(data) {
+						updateQueryList();
+	                }
+			);
+		}
+		$("#deleteQueryA").click(deleteQuery);
+		
+		
+		
+	});
+/*]]>*/
+</script>
+
+</head>
+<body>
+
+	<div th:replace="template::navbar"></div>
+
+	<div class="container">
+		<form id="form" role="form" action="#"
+			th:action="@{#}"  onkeydown="if(event.keyCode==13){return false;}" method="post">
+
+			<fieldset>
+				<div id="legend" class="">
+					<legend class="">查询病例</legend>
+				</div>
+
+
+				<div class="row">
+					<div class="col-xs-3  col-lg-2"></div>
+					<div class="col-xs-3  col-lg-2 col-xs-offset-3  col-lg-offset-2">
+						<botton  class="btn btn-default" id="queryButton" type="button">查询</botton>
+					</div>
+				</div>
+
+			</fieldset>
+		</form>
+		<div class="row" style="margin: 15px 0" >
+			<div class="col-xs-4  col-lg-2">
+				<h4>查询结果</h4>
+			</div>
+			<div class="col-xs-4  col-lg-4 form-inline">
+				<input class="form-control"  type="text" id="queryName" placeholder="查询名称" /><botton class="btn btn-default" id="saveQueryButton" >保存查询</botton>
+			</div>
+			<div class="col-xs-2  col-lg-1">
+				<div class="dropdown">
+				  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
+				  	查询记录
+				    <span class="caret"></span>
+				  </button>
+				  <ul class="dropdown-menu" role="menu" id="dropdownlist" aria-labelledby="dropdownMenu1">
+					
+				  </ul>
+				</div>
+			</div>
+			<div class="col-xs-2  col-lg-1">
+				<a id="deleteQueryA" href="#">删除</a>
+			</div>
+
+		</div>
+
+
+
+		<div id="result" />
+		
+	</div>
+
+
+
+</body>
+</html>

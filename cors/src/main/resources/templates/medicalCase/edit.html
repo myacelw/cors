@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"	xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Add Medical Case</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet"
+	href="http://cdn.bootcss.com/bootstrap/3.2.0/css/bootstrap.min.css" 
+	th:href="@{#{href.bootstrap.css}}"></link>
+<link rel="stylesheet"
+	href="http://cdn.bootcss.com/bootstrap/3.2.0/css/bootstrap-theme.min.css"></link>
+<script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://cdn.bootcss.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+	
+	<div th:replace="template::navbar"></div>
+	
+	<div class="container">
+	<form  role="form" action="#" th:action="@{/medicalCase/edit}"
+		th:object="${medicalCase}" method="post">
+
+		<fieldset>
+			<div id="legend" class="">
+				<legend class="">添加病例</legend>
+			</div>
+
+
+<!--/*-->
+			<div class="control-group"
+				th:classappend="${#fields.hasErrors('number')}? has-error">
+				<label class="control-label" for="number">病历号</label>
+				<div class="controls">
+					<input type="text" class="input-xlarge" th:field="*{number}"/>
+					<p class="help-block" th:if="${#fields.hasErrors('number')}" th:errors="*{number}">Error</p>
+				</div>
+			</div>
+			
+			<div class="control-group"
+				th:classappend="${#fields.hasErrors('sex')}? has-error">
+				<label class="control-label">性别</label>
+				<div class="controls">
+					<select class="input-xlarge"  th:field="*{sex}">
+						<option th:value="male" >男</option>
+						<option th:value="woman" >女</option>
+					</select>
+				</div>
+			</div>
+			
+<!--*/-->
+
+<!--/*/
+			<input type="hidden" th:field="*{id}"/>
+			<input type="hidden" th:field="*{hormoneToNeg}"/>
+			<input type="hidden" th:field="*{hormoneReason}"/>
+			<input type="hidden" th:field="*{fk506ToNeg}"/>
+			<input type="hidden" th:field="*{fk506Reason}"/>
+			
+			<div th:replace="template :: input(field='number',text='病历号',type='text')">病历号   XXXXXX</div>
+			<div th:replace="template :: input('name','姓名','text')"></div>
+			<div th:replace="template :: select(field='sex',options=${T(cors.domain.Sex).values()},text='性别')"></div>
+			<div th:replace="template :: input('nation','民族','text')"></div>
+			<div th:replace="template :: input('birthday','出生日期','date')"></div>
+
+			<div class="form-group"
+					th:classappend="${#fields.hasErrors('clinical')}? has-error">
+					<label class="control-label" th:for="'clinical'" th:text="'临床诊断'"></label>
+					<select class="form-control" th:id="'clinical'"
+						th:field="*{clinical}">
+						<option th:each="item:${clinicals}" th:value="${item.id}"
+							th:text="${item['name']}">Option A</option>
+					</select>
+			</div>
+			
+			<div th:replace="template :: textarea('pathology','病理诊断')"></div>
+			<div th:replace="template :: input('onsetTime','发病时间','date')"></div>
+			<div th:replace="template :: input('weight','发病时体重（利尿后）kg','text')"></div>
+			
+/*/-->
+			<input type="submit" class="btn btn-default" value="确定" />
+		</fieldset>
+	</form>
+	</div>
+
+</body>
+</html>
