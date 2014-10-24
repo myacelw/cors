@@ -32,7 +32,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         UserDetails user = null;   
           try {   
         	User t = repository.findByUsername(username).get(0);   
-            user = new org.springframework.security.core.userdetails.User(t.getUsername(), t.getPassword(), t.isEnabled(), true, true, true, getAuthorities());   
+            user = new org.springframework.security.core.userdetails.User(t.getUsername(), t.getPassword(), t.isEnabled(), true, true, true, getAuthorities(t.getRole()));   
                 
                 
         } catch (Exception e) {   
@@ -48,9 +48,9 @@ public class CustomUserDetailsService implements UserDetailsService {
      * @param access  
      * @return  
      */  
-    public Collection<GrantedAuthority> getAuthorities() {   
+    public Collection<GrantedAuthority> getAuthorities(String role) {   
          List<GrantedAuthority> authList = new ArrayList<GrantedAuthority>();   
-       authList.add(new SimpleGrantedAuthority("ROLE_USERS"));   
+       authList.add(new SimpleGrantedAuthority(role==null?"ROLE_USERS":role));   
         return authList;   
     }   
 } 

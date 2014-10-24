@@ -8,6 +8,8 @@ public class User {
 	@Id
 	private String username;
 	private String password;
+	private String role;
+	
 	private boolean enabled = true;
 
 	
@@ -29,6 +31,12 @@ public class User {
 	}
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
+	}
+	public String getRole() {
+		return role;
+	}
+	public void setRole(String role) {
+		this.role = role;
 	}
 
 	

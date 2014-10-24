@@ -104,7 +104,21 @@ $(document).ready(function(){
 /*]]>*/
 </script>
 
+<style>
+@media only screen and (min-width: 600px){
+    #myChart{
+            width: 600px;
+            height:400px;
+   }
+}
 
+@media only screen and (max-width: 600px){
+    #myChart{ 
+        width: 98%;
+        height:50%;
+    }
+}
+</style>
 
 </head>
 <body>
@@ -124,7 +138,7 @@ $(document).ready(function(){
 	<div class="row">
 		<label class="col-xs-3" th:text="#{medicalCase.name}">姓名</label>
 		<p class="col-xs-3" th:text="${medicalCase.name}">张三</p>
-		<a class="btn btn-default" th:href="@{/medicalCase/edit(id=${medicalCase.id})}">修改</a>
+		<a class="btn btn-default" th:href="@{/medicalCase/edit(id=${medicalCase.id})}" th:if="${session.SPRING_SECURITY_CONTEXT.authentication.authorities.iterator().next().getAuthority()=='ROLE_ADMIN'}">修改</a>
 	</div>
 	<div class="row">
 		<label class="col-xs-3" th:text="#{medicalCase.sex}">性别</label>
@@ -139,7 +153,7 @@ $(document).ready(function(){
 
 		<div class="page-header">
 			<h2>
-				<small>病初时实验室检查</small> <a class="btn btn-default" th:if="${#lists.isEmpty(initialTestResults)}"
+				<small>病初时实验室检查</small> <a class="btn btn-default" th:if="${#lists.isEmpty(initialTestResults) and session.SPRING_SECURITY_CONTEXT.authentication.authorities.iterator().next().getAuthority()!='ROLE_ADMIN'}"
 					th:href="@{/testResult/edit(type='Initial',medicalCaseId=${medicalCase.id})}">添加</a>
 			</h2>
 		</div>
@@ -170,7 +184,7 @@ $(document).ready(function(){
 					<td th:text="${r.alt?:'未测'}">1.8</td>
 					<td th:text="${r.ast?:'未测'}">1.9</td>
 					<td th:text="${r.ccr?:'未测'}">2.0</td>
-					<td> <a class="btn btn-default" th:href="@{/testResult/edit(id=${r.id})}">修改</a></td>
+					<td> <a class="btn btn-default" th:href="@{/testResult/edit(id=${r.id})}" th:if="${session.SPRING_SECURITY_CONTEXT.authentication.authorities.iterator().next().getAuthority()=='ROLE_ADMIN'}">修改</a></td>
 				</tr>
 			</table>
 		</div>
@@ -179,7 +193,7 @@ $(document).ready(function(){
 		<div class="page-header">
 			<h2>
 				<small>激素初治情况</small> <a class="btn btn-default"
-					th:href="@{/testResult/edit(type='Hormone',medicalCaseId=${medicalCase.id})}">添加</a>
+					th:href="@{/testResult/edit(type='Hormone',medicalCaseId=${medicalCase.id})}" th:if="${session.SPRING_SECURITY_CONTEXT.authentication.authorities.iterator().next().getAuthority()=='ROLE_ADMIN'}">添加</a>
 			</h2>
 		</div>
 		<div class="row">
@@ -221,8 +235,8 @@ $(document).ready(function(){
 					<td th:text="${r.bun?:'未测'}">2.0</td>
 					<td th:text="${r.urea?:'未测'}">Urea</td>
 					<td th:text="${r.mem}">Mem</td>					
-					<td> <a class="btn btn-default" th:href="@{/testResult/edit(id=${r.id})}">修改</a>
-					<a class="btn btn-default" th:href="@{/testResult/delete(id=${r.id})}">删除</a>
+					<td> <a class="btn btn-default" th:href="@{/testResult/edit(id=${r.id})}" th:if="${session.SPRING_SECURITY_CONTEXT.authentication.authorities.iterator().next().getAuthority()=='ROLE_ADMIN'}">修改</a>
+					<a class="btn btn-default" th:href="@{/testResult/delete(id=${r.id})}" th:if="${session.SPRING_SECURITY_CONTEXT.authentication.authorities.iterator().next().getAuthority()=='ROLE_ADMIN'}">删除</a>
 					</td>
 				</tr>
 			</table>
@@ -230,24 +244,24 @@ $(document).ready(function(){
 		<div class="row">
 			<label class="col-xs-3">初次使用免疫抑制剂原因</label>
 			<p class="col-xs-3" th:text="${medicalCase.hormoneReason}"/>
-			<a class="btn btn-default" th:href="@{/medicalCase/hormoneReason(id=${medicalCase.id})}">设置</a>
+			<a class="btn btn-default" th:href="@{/medicalCase/hormoneReason(id=${medicalCase.id})}" th:if="${session.SPRING_SECURITY_CONTEXT.authentication.authorities.iterator().next().getAuthority()=='ROLE_ADMIN'}">设置</a>
 		</div>
 		<div class="row">
 			<label class="col-xs-3">转阴时间</label>
 			<p class="col-xs-3" th:text="${{medicalCase.hormoneToNeg}}"/>
-			<a class="btn btn-default" th:href="@{/medicalCase/toNeg(id=${medicalCase.id},type=${T(cors.domain.TestType).Hormone})}">设置</a>
+			<a class="btn btn-default" th:href="@{/medicalCase/toNeg(id=${medicalCase.id},type=${T(cors.domain.TestType).Hormone})}" th:if="${session.SPRING_SECURITY_CONTEXT.authentication.authorities.iterator().next().getAuthority()=='ROLE_ADMIN'}">设置</a>
 		</div>
 
 
 		<div class="page-header">
 			<h2>
 				<small>FK506治疗情况</small> 
-				<a class="btn btn-default" th:href="@{/testResult/edit(type='FK506',medicalCaseId=${medicalCase.id})}"> 添加 </a>
+				<a class="btn btn-default" th:href="@{/testResult/edit(type='FK506',medicalCaseId=${medicalCase.id})}" th:if="${session.SPRING_SECURITY_CONTEXT.authentication.authorities.iterator().next().getAuthority()=='ROLE_ADMIN'}"> 添加 </a>
 				<a class="btn btn-default" id="showChart"> 显示/隐藏图表 </a>
 			</h2>
 		</div>
 		<div id ="chartdiv"  style="display:none">
-			<canvas id="myChart" width="600" height="400"></canvas>
+			<canvas id="myChart" width="600" height="300"></canvas>
 		</div>
 		
 		<div class="row">
@@ -298,8 +312,8 @@ $(document).ready(function(){
 					<td class="bun" th:text="${r.bun?:'未测'}">2.0</td>
 					<td class="urea" th:text="${r.urea?:'未测'}">Urea</td>
 					<td th:text="${r.mem}">Mem</td>	
-					<td> <a class="btn btn-default" th:href="@{/testResult/edit(id=${r.id})}">修改</a>
-					<a class="btn btn-default" th:href="@{/testResult/delete(id=${r.id})}">删除</a>
+					<td> <a class="btn btn-default" th:href="@{/testResult/edit(id=${r.id})}" th:if="${session.SPRING_SECURITY_CONTEXT.authentication.authorities.iterator().next().getAuthority()=='ROLE_ADMIN'}">修改</a>
+					<a class="btn btn-default" th:href="@{/testResult/delete(id=${r.id})}" th:if="${session.SPRING_SECURITY_CONTEXT.authentication.authorities.iterator().next().getAuthority()=='ROLE_ADMIN'}">删除</a>
 					</td>
 				</tr>
 			</table>
@@ -307,12 +321,12 @@ $(document).ready(function(){
 		<div class="row">
 			<label class="col-xs-3">使用原因</label>
 			<p class="col-xs-3" th:text="${medicalCase.fk506Reason}"/>
-			<a class="btn btn-default" th:href="@{/medicalCase/fk506Reason(id=${medicalCase.id})}">设置</a>
+			<a class="btn btn-default" th:href="@{/medicalCase/fk506Reason(id=${medicalCase.id})}" th:if="${session.SPRING_SECURITY_CONTEXT.authentication.authorities.iterator().next().getAuthority()=='ROLE_ADMIN'}">设置</a>
 		</div>
 		<div class="row">
 			<label class="col-xs-3">转阴时间</label>
 			<p class="col-xs-3" th:text="${{medicalCase.fk506ToNeg}}"/>
-			<a class="btn btn-default" th:href="@{/medicalCase/toNeg(id=${medicalCase.id},type=${T(cors.domain.TestType).FK506})}">设置</a>
+			<a class="btn btn-default" th:href="@{/medicalCase/toNeg(id=${medicalCase.id},type=${T(cors.domain.TestType).FK506})}" th:if="${session.SPRING_SECURITY_CONTEXT.authentication.authorities.iterator().next().getAuthority()=='ROLE_ADMIN'}">设置</a>
 		</div>
 
 
@@ -320,7 +334,7 @@ $(document).ready(function(){
 		<div class="page-header">
 			<h2>
 				<small>不良反应</small> <a class="btn btn-default"
-					th:href="@{/adverseReaction/edit(medicalCaseId=${medicalCase.id})}">添加</a>
+					th:href="@{/adverseReaction/edit(medicalCaseId=${medicalCase.id})}" th:if="${session.SPRING_SECURITY_CONTEXT.authentication.authorities.iterator().next().getAuthority()=='ROLE_ADMIN'}">添加</a>
 			</h2>
 		</div>
 		<div class="row">
@@ -337,8 +351,8 @@ $(document).ready(function(){
 					<td th:text="${r.symptom}">症状</td>
 					<td th:text="${r.mem}">描述</td>	
 					
-					<td> <a class="btn btn-default" th:href="@{/adverseReaction/edit(id=${r.id})}">修改</a>
-					<a class="btn btn-default" th:href="@{/adverseReaction/delete(id=${r.id})}">删除</a>
+					<td> <a class="btn btn-default" th:href="@{/adverseReaction/edit(id=${r.id})}" th:if="${session.SPRING_SECURITY_CONTEXT.authentication.authorities.iterator().next().getAuthority()=='ROLE_ADMIN'}">修改</a>
+					<a class="btn btn-default" th:href="@{/adverseReaction/delete(id=${r.id})}" th:if="${session.SPRING_SECURITY_CONTEXT.authentication.authorities.iterator().next().getAuthority()=='ROLE_ADMIN'}">删除</a>
 					</td>
 				</tr>
 			</table>

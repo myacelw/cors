@@ -12,10 +12,14 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import cors.domain.condition.ConditionItem;
 import cors.domain.condition.Symbol;
 import cors.service.ConditionTypes;
 @Entity
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class ConditionGroup {
 	
 	@Id

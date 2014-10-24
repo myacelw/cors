@@ -3,11 +3,13 @@ package cors.web;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -366,10 +368,18 @@ public class MedicalCaseController {
 	}
 	
 	@RequestMapping("/show/{id}")
-	public String show(@PathVariable("id") Long id, Model model) {
+	public String show(@PathVariable("id") Long id, Model model,HttpSession session) {
 		MedicalCase ca = repository.findOne(id);
 		model.addAttribute("medicalCase", ca);
 
+//		for (Enumeration<String> e =session.getAttributeNames(); e.hasMoreElements();){
+//			String a = e.nextElement();
+//		    System.out.println(a);
+//		    System.out.println(session.getAttribute(a));
+//		    System.out.println("---");
+//		}
+//		String role =((org.springframework.security.core.context.SecurityContext)session.getAttribute("SPRING_SECURITY_CONTEXT")).getAuthentication().getAuthorities().iterator().next().getAuthority();
+//		System.out.println("--- "+role );
 		List<TestResult> initialTestResults = testResultRepository
 				.findByTypeAndMedicalCaseId(TestType.Initial, id);
 		model.addAttribute("initialTestResults", initialTestResults);
