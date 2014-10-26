@@ -34,7 +34,7 @@
 		class="form-group ">
 		{{^first}}
 		<div class="row">
-			<div class="col-xs-3  col-lg-2">
+			<div class="col-xs-4  col-lg-2">
 				<select class="form-control" name="conditions[{{number}}].operator">
 					<option th:each="item : ${T(cors.domain.condition.Operator).values()}" th:text="${item}" th:value="${item}">AND</option>
 				</select>
@@ -42,25 +42,25 @@
 		</div>
 		{{/first}}
 		<div class="row ">
-			<div class="col-xs-9  col-lg-6">
+			<div class="col-xs-8  col-lg-6">
 				<select  class="form-control"  id="type_{{number}}" name="conditions[{{number}}].type">
 					<option th:each="item : ${types}" th:utext="#{'ConditionType.'+${item.getName()}}" th:value="${item.getName()}"  th:attrappend="data-inputType=${item.getClazz()}">姓名</option>
 				</select>
 			</div>
-			<div class="col-xs-3  col-lg-2">
+			<div class="col-xs-4  col-lg-2">
 				<select class="form-control"  id="symbol_{{number}}" name="conditions[{{number}}].symbol">
 					<option th:each="item : ${T(cors.domain.condition.Symbol).values()}" th:id="${'symbol_{{number}}-'+item}" th:utext="${item.toName()}"  th:value="${item}">=</option>
 				</select>
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-xs-9  col-lg-6">
+			<div class="col-xs-8  col-lg-6">
 				<input class="form-control" id="input_{{number}}" type="text" placeholder="条件值" name="conditions[{{number}}].value"/>
 				<select class="form-control" id="select_{{number}}" style="display:none" name="conditions[{{number}}].selected">
 
 				</select>
 			</div>
-			<div class="col-xs-3  col-lg-2">
+			<div class="col-xs-4  col-lg-2">
 				{{^first}}
 				<botton id="remove_button_{{number}}" type="button"
 					class="btn btn-default">-</botton>
