@@ -3,6 +3,7 @@ package cors.domain;
 import java.util.Date;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
@@ -32,7 +33,7 @@ public class MedicalCase {
 	@NotNull
 	private Date birthday;
 	
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.EAGER)
 	private ClinicalDiagnosis clinical;
 	
 	private String pathology;

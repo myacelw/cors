@@ -5,7 +5,5 @@
 	<classpathentry kind="src" path="src/test/java"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry exported="true" kind="con" path="org.springsource.ide.eclipse.gradle.classpathcontainer"/>
-	<classpathentry kind="lib" path="C:/Users/Administrator/.gradle/caches/modules-2/files-2.1/net.sf.ehcache/ehcache-core/2.4.3/fd258ef6959f27fb678b04f90139ded4588e2d15/ehcache-core-2.4.3.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Administrator/.gradle/caches/modules-2/files-2.1/org.hibernate/hibernate-ehcache/4.3.5.Final/20fde5d106b17ef69119a55e10452739891e2fdc/hibernate-ehcache-4.3.5.Final.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
